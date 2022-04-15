@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 //import styles 👇
 import 'react-modern-drawer/dist/index.css'
 import styles from '../../styles/pages.module.css';
@@ -53,6 +53,9 @@ import { Route } from '../interfaces/route';
 
 
 const label = { inputProps: { 'aria-label': 'Checkbox demo' } };
+
+const { useState } = React;
+
 const CalculatePage = (props: any) => {
   const [towns1, setTowns1] = React.useState(towns);
   const [valueFrom, setValueFrom] = React.useState(towns[4].name);
@@ -66,7 +69,7 @@ const CalculatePage = (props: any) => {
 
   //results
   const [cost, setCost] = React.useState(0);
-  const [routeCount, setRouteCount] = React.useState(0);
+  const [routeCount, setRouteCount] = useState(0);
 
   const maxRoutesChanged = (event: any) => {
     setMaxRoutes(parseInt(event.target.value));
@@ -94,11 +97,15 @@ const CalculatePage = (props: any) => {
     { id: 'FD1', from: 'F', to: 'D', cost: 1 },
   ];
 
+  useEffect(() => {
+    console.log('routeCount',routeCount)
+  }, [routeCount]);
+
+  //calculation
+  var count = 0;
+  var nodesArray = [];
+  
   const calRoutes = () => {
-    useEffect(() => {
-      setRouteCount(0);
-    }, [routeCount]);
-    console.log('startly',routeCount)
     let from = '';
     let to = '';
     let index = towns.findIndex(t => t.name == valueFrom);
@@ -109,49 +116,66 @@ const CalculatePage = (props: any) => {
       let start = from;
       let end = to;
       let nodes = routes.filter(r => r.from == start);
-
-      if (definedCost == 0) {
-        if (nodes.length > 0) {
-          for (let i = 0; i < nodes.length; i++) {
-            start = nodes[i].to;
-            recursiveCalRoutes(start, end);
+      if (nodes.length > 0) {
+        if (definedCost == 0) {
+          if(maxRoutes > 0){
+            for (let i = 0; i < nodes.length; i++) {
+              nodesArray.push(nodes[i]);
+              if(nodesArray.length < maxRoutes){
+                recursiveCalRoutesByMaxRoutes(nodes[i].to, end);
+              }else{
+                if (nodes[i].to == end) {
+                  count = count + 1; 
+                  setRouteCount(count);
+                }
+              }
+            }
+          }else{
+              for (let i = 0; i < nodes.length; i++) {
+                start = nodes[i].to;
+                recursiveCalRoutes(start, end);
+              }
           }
-        }
-      } else if (definedCost > 0) {
-        if (nodes.length > 0) {
+        } 
+        else if (definedCost > 0) {
           for (let i = 0; i < nodes.length; i++) {
             start = nodes[i].to;
-            let cost = 0;
-            cost = cost + nodes[i].cost;
-            if (cost < definedCost) {
-              recursiveCalRoutesByCost(start,cost);
-            }
-            else {
-              let temp = routeCount + 1;
-              useEffect(() => {
-                setRouteCount(0);
-              }, [routeCount]);
-            }
+            recursiveCalRoutesByCost(start,end,nodes[i].cost);
           }
         }
       }
     }
   }
 
-  function recursiveCalRoutesByCost(start: string,cost : number) {
-    let nodes1 = routes.filter(r => r.from == start);
-    if (nodes1.length > 0) {
-      for (let i = 0; i < nodes1.length; i++) {
-        let cost1 = cost + nodes1[i].cost;
-        let start1 = nodes1[i].to;
-        if (cost1 < definedCost) {
-          recursiveCalRoutesByCost(start1,cost1)
+  function recursiveCalRoutesByMaxRoutes(start: string, end: string) {
+    let nodes = routes.filter(r => r.from == start);
+    if (nodes.length > 0) {
+      for (let i = 0; i < nodes.length; i++) {
+        if(nodesArray.length < maxRoutes){
+          recursiveCalRoutesByMaxRoutes(nodes[i].to,end);
+        }else{
+          if (nodes[i].to !== end) {
+            count = count + 1; 
+            setRouteCount(count);
+          }
+        }
+      }
+    }
+  }
+
+  function recursiveCalRoutesByCost(start: string,end : string,cost : number) {
+    let nodes = routes.filter(r => r.from == start);
+    if (nodes.length > 0) {
+      for (let i = 0; i < nodes.length; i++) {
+        let cost1 = cost + nodes[i].cost;
+        if (cost < definedCost) {
+          recursiveCalRoutesByCost(nodes[i].to,end,cost1)
         }
         else {
-          let temp = routeCount + 1;
-              useEffect(() => {
-                setRouteCount(0);
-              }, [routeCount]);
+          if (nodes[i].to == end) {
+          count = count + 1; 
+          setRouteCount(count);
+          }
         }
       }
     }
@@ -162,15 +186,12 @@ const CalculatePage = (props: any) => {
     let nodes = routes.filter(r => r.from == start);
     if (nodes.length > 0) {
       for (let i = 0; i < nodes.length; i++) {
-        let start = nodes[i].to;
-        if (start != end) {
-          recursiveCalRoutes(start, end);
+        if (nodes[i].to != end) {
+          recursiveCalRoutes(nodes[i].to,end);
         }
         else {
-          let temp = routeCount + 1;
-              useEffect(() => {
-                setRouteCount(0);
-              }, [routeCount]);
+          count = count + 1; 
+          setRouteCount(count);
         }
       }
     }
@@ -393,10 +414,6 @@ const CalculatePage = (props: any) => {
 
           </Grid>
           <Grid item lg={6} md={6} sm={12} xs={12}>
-            {/* <Box sx={{ mr: 0.5, mb: 1 }}>
-              <Checkbox {...label} defaultChecked value={useTwice} onChange={useTwiceChanged} />
-              <span>Use the same route twice</span>
-            </Box> */}
             <div>
               <Button variant="contained" sx={{ mt: 2, mb: 1 }} startIcon={<SearchIcon />} className={styles.send_btn_contained}
                 onClick={calRoutes}>
