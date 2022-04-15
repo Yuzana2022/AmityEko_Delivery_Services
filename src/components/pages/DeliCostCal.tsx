@@ -270,8 +270,17 @@ const CalculatePage = (props: any) => {
           AB1, AC4, AD10, BE3, CD4, CF2, DE1, EB3, EA2, FD1
         </Typography>
 
-        <Stack direction="row" spacing={3}>
-          <Box sx={{ minWidth: 150, mr: 0.5 }}>
+        <Box
+          sx={{
+            display: "flex",
+            flexWrap: "wrap",
+            alignContent: "flex-start",
+            bgcolor: "background.paper",
+            borderRadius: 1,
+            p: 3
+          }}
+        >
+          <Box sx={{ minWidth: 150, mr: 1 }}>
             <FormControl fullWidth>
               <InputLabel id="demo-simple-select-label">From</InputLabel>
               <Select
@@ -294,7 +303,7 @@ const CalculatePage = (props: any) => {
             </FormControl>
           </Box>
 
-          <Button variant="contained" className={styles.send_btn_contained}
+          <Button sx={{ mr:1 }} variant="contained" className={styles.send_btn_contained}
             onClick={calCost}>
             Calculate Cost
           </Button>
@@ -302,7 +311,7 @@ const CalculatePage = (props: any) => {
             onClick={refreshCost}>
             Refresh
           </Button>
-        </Stack>
+        </Box>
         <br></br>
         <Typography className={styles.send_typography}
           variant="subtitle1"
@@ -423,7 +432,7 @@ const CalculatePage = (props: any) => {
             />
           </Box>
           <div>
-            <Button variant="contained" sx={{  mb: 1,mr:1 }} className={styles.send_btn_contained}
+            <Button variant="contained" sx={{ mb: 1, mr: 1 }} className={styles.send_btn_contained}
               onClick={calRoutes}>
               Calculate Routes
             </Button>
