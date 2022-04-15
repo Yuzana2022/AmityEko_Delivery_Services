@@ -43,19 +43,6 @@ const Header = (props: any) => {
                         <Typography variant="subtitle1" component="div" sx={{ flexGrow: 1 }} align="left">
                             <img src={LogoIcon} alt="Logo" className={stylesHeader.landing_logoStyle} />
                         </Typography>
-                        <Typography variant="body2" mr={1} mt={1} component="div" gutterBottom>
-                            <span className={stylesHeader.cursor}>Language</span>
-                        </Typography>
-
-                        <Typography variant="body2" component="div" mr={1} mt={1} gutterBottom onClick={handleClick}>
-                            <Link to="/login" id="link_01">
-                                <span className={stylesHeader.cursor}>Login / Signup</span>
-                            </Link>
-                        </Typography>
-
-                        <Typography variant="body2" mt={1} component="div" gutterBottom >
-                            <span className={stylesHeader.cursor}>Help</span>
-                        </Typography>
                     </Toolbar>
                 </AppBar>
             </Box>

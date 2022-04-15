@@ -17,6 +17,7 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import Grid from '@mui/material/Grid';
+import Divider from '@mui/material/Divider';
 
 import { StoreState } from '../../stores/reducers/index';
 import { connect } from 'react-redux';
@@ -98,13 +99,13 @@ const CalculatePage = (props: any) => {
   ];
 
   useEffect(() => {
-    console.log('routeCount',routeCount)
+    console.log('routeCount', routeCount)
   }, [routeCount]);
 
   //calculation
   var count = 0;
   var nodesArray = [];
-  
+
   const calRoutes = () => {
     let from = '';
     let to = '';
@@ -118,29 +119,29 @@ const CalculatePage = (props: any) => {
       let nodes = routes.filter(r => r.from == start);
       if (nodes.length > 0) {
         if (definedCost == 0) {
-          if(maxRoutes > 0){
+          if (maxRoutes > 0) {
             for (let i = 0; i < nodes.length; i++) {
               nodesArray.push(nodes[i]);
-              if(nodesArray.length < maxRoutes){
-                recursiveCalRoutesByMaxRoutes(nodes[i].to, end);
-              }else{
+              if (nodesArray.length < maxRoutes) {
+                //recursiveCalRoutesByMaxRoutes(nodes[i].to, end);
+              } else {
                 if (nodes[i].to == end) {
-                  count = count + 1; 
+                  count = count + 1;
                   setRouteCount(count);
                 }
               }
             }
-          }else{
-              for (let i = 0; i < nodes.length; i++) {
-                start = nodes[i].to;
-                recursiveCalRoutes(start, end);
-              }
+          } else {
+            for (let i = 0; i < nodes.length; i++) {
+              start = nodes[i].to;
+              recursiveCalRoutes(start, end);
+            }
           }
-        } 
+        }
         else if (definedCost > 0) {
           for (let i = 0; i < nodes.length; i++) {
             start = nodes[i].to;
-            recursiveCalRoutesByCost(start,end,nodes[i].cost);
+            recursiveCalRoutesByCost(start, end, nodes[i].cost);
           }
         }
       }
@@ -151,11 +152,11 @@ const CalculatePage = (props: any) => {
     let nodes = routes.filter(r => r.from == start);
     if (nodes.length > 0) {
       for (let i = 0; i < nodes.length; i++) {
-        if(nodesArray.length < maxRoutes){
-          recursiveCalRoutesByMaxRoutes(nodes[i].to,end);
-        }else{
+        if (nodesArray.length < maxRoutes) {
+          recursiveCalRoutesByMaxRoutes(nodes[i].to, end);
+        } else {
           if (nodes[i].to !== end) {
-            count = count + 1; 
+            count = count + 1;
             setRouteCount(count);
           }
         }
@@ -163,18 +164,18 @@ const CalculatePage = (props: any) => {
     }
   }
 
-  function recursiveCalRoutesByCost(start: string,end : string,cost : number) {
+  function recursiveCalRoutesByCost(start: string, end: string, cost: number) {
     let nodes = routes.filter(r => r.from == start);
     if (nodes.length > 0) {
       for (let i = 0; i < nodes.length; i++) {
         let cost1 = cost + nodes[i].cost;
         if (cost < definedCost) {
-          recursiveCalRoutesByCost(nodes[i].to,end,cost1)
+          recursiveCalRoutesByCost(nodes[i].to, end, cost1)
         }
         else {
           if (nodes[i].to == end) {
-          count = count + 1; 
-          setRouteCount(count);
+            count = count + 1;
+            setRouteCount(count);
           }
         }
       }
@@ -187,10 +188,10 @@ const CalculatePage = (props: any) => {
     if (nodes.length > 0) {
       for (let i = 0; i < nodes.length; i++) {
         if (nodes[i].to != end) {
-          recursiveCalRoutes(nodes[i].to,end);
+          recursiveCalRoutes(nodes[i].to, end);
         }
         else {
-          count = count + 1; 
+          count = count + 1;
           setRouteCount(count);
         }
       }
@@ -270,7 +271,7 @@ const CalculatePage = (props: any) => {
         </Typography>
 
         <Stack direction="row" spacing={3}>
-          <Box sx={{ minWidth: 120, mr: 0.5 }}>
+          <Box sx={{ minWidth: 150, mr: 0.5 }}>
             <FormControl fullWidth>
               <InputLabel id="demo-simple-select-label">From</InputLabel>
               <Select
@@ -295,7 +296,7 @@ const CalculatePage = (props: any) => {
 
           <Button variant="contained" className={styles.send_btn_contained}
             onClick={calCost}>
-            Calculate Delivery Cost
+            Calculate Cost
           </Button>
           <Button variant="contained" className={styles.send_btn_contained}
             onClick={refreshCost}>
@@ -339,96 +340,111 @@ const CalculatePage = (props: any) => {
         >
           The delivery cost for a given delivery route is {cost}.
         </Typography>
+        <Divider />
+
         <br></br>
 
-        <Grid container sx={{ mb: 3 }}>
+        <Box
+          sx={{
+            display: "flex",
+            flexWrap: "wrap",
+            alignContent: "flex-start",
+            bgcolor: "background.paper",
+            borderRadius: 1,
+            p: 3
+          }}
+        >
+          <Box sx={{ minWidth: 150, mr: 1, mb: 1 }}>
+            <FormControl fullWidth>
+              <InputLabel id="demo-simple-select-label">From</InputLabel>
+              <Select
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                value={valueFrom}
+                label="From"
+                onChange={fromCityChanged}
+              >
+                {
+                  towns.map((town) => {
+                    return (
+                      <MenuItem key={town.name} value={town.name}>
+                        {town.name}
+                      </MenuItem>
+                    );
+                  })
+                }
+              </Select>
+            </FormControl>
+          </Box>
+          <Box sx={{ minWidth: 150, mr: 1, mb: 1 }}>
+            <FormControl fullWidth>
+              <InputLabel id="demo-simple-select-label">To</InputLabel>
+              <Select
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                value={valueTo}
+                label="To"
+                onChange={toCityChanged}
+              >
+                {
+                  towns.map((town) => {
+                    return (
+                      <MenuItem key={town.name} value={town.name}>
+                        {town.name}
+                      </MenuItem>
+                    );
+                  })
+                }
+              </Select>
+            </FormControl>
+          </Box>
+          <Box sx={{ minWidth: 150, mr: 1, mb: 1 }}>
+            <TextField
+              id="outlined-number"
+              label="Maximum Stops"
+              type="number"
+              value={maxRoutes}
+              onChange={maxRoutesChanged}
+              InputLabelProps={{
+                shrink: true,
+              }}
+            />
+          </Box>
+          <Box sx={{ minWidth: 150, mr: 1, mb: 1 }}>
+            <TextField
+              id="outlined-number"
+              label="Delivery Cost less than"
+              type="number"
+              value={definedCost}
+              onChange={definedCostChanged}
+              InputLabelProps={{
+                shrink: true,
+              }}
+            />
+          </Box>
+          <div>
+            <Button variant="contained" sx={{  mb: 1,mr:1 }} className={styles.send_btn_contained}
+              onClick={calRoutes}>
+              Calculate Routes
+            </Button>
+          </div>
+
+          <div>
+            <Button variant="contained" sx={{ mb: 1 }} className={styles.send_btn_contained}
+              onClick={refreshRoutes}>
+              Refresh
+            </Button>
+          </div>
+        </Box>
+        {/* <Grid container sx={{ mb: 3 }}>
           <Grid item lg={6} md={6} sm={12} xs={12}>
-            <Box sx={{ minWidth: 120, mr: 0.5, mb: 1 }}>
-              <FormControl fullWidth>
-                <InputLabel id="demo-simple-select-label">From</InputLabel>
-                <Select
-                  labelId="demo-simple-select-label"
-                  id="demo-simple-select"
-                  value={valueFrom}
-                  label="From"
-                  onChange={fromCityChanged}
-                >
-                  {
-                    towns.map((town) => {
-                      return (
-                        <MenuItem key={town.name} value={town.name}>
-                          {town.name}
-                        </MenuItem>
-                      );
-                    })
-                  }
-                </Select>
-              </FormControl>
-            </Box>
-            <Box sx={{ minWidth: 120, mr: 0.5, mb: 1 }}>
-              <FormControl fullWidth>
-                <InputLabel id="demo-simple-select-label">To</InputLabel>
-                <Select
-                  labelId="demo-simple-select-label"
-                  id="demo-simple-select"
-                  value={valueTo}
-                  label="To"
-                  onChange={toCityChanged}
-                >
-                  {
-                    towns.map((town) => {
-                      return (
-                        <MenuItem key={town.name} value={town.name}>
-                          {town.name}
-                        </MenuItem>
-                      );
-                    })
-                  }
-                </Select>
-              </FormControl>
-            </Box>
-            <Box sx={{ minWidth: 120, mr: 0.5, mb: 1 }}>
-              <TextField
-                id="outlined-number"
-                label="Maximum Stops"
-                type="number"
-                value={maxRoutes}
-                onChange={maxRoutesChanged}
-                InputLabelProps={{
-                  shrink: true,
-                }}
-              />
-            </Box>
-            <Box sx={{ minWidth: 120, mr: 0.5, mb: 1 }}>
-              <TextField
-                id="outlined-number"
-                label="Delivery Cost less than"
-                type="number"
-                value={definedCost}
-                onChange={definedCostChanged}
-                InputLabelProps={{
-                  shrink: true,
-                }}
-              />
-            </Box>
+            
 
           </Grid>
           <Grid item lg={6} md={6} sm={12} xs={12}>
-            <div>
-              <Button variant="contained" sx={{ mt: 2, mb: 1 }} startIcon={<SearchIcon />} className={styles.send_btn_contained}
-                onClick={calRoutes}>
-                Calculate Delivery Routes
-              </Button>
-            </div>
-
-            <div>
-              <Button variant="contained" sx={{ mt: 2, mb: 1 }} className={styles.send_btn_contained}
-                onClick={refreshRoutes}>
-                Refresh
-              </Button>
-            </div>
+           
           </Grid>
-        </Grid>
+        </Grid> */}
         <br></br>
         <div>
           <Typography className={styles.send_typography}

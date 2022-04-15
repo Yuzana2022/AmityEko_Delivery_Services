@@ -3,9 +3,6 @@ import React from 'react';
 import { Switch, Route } from 'react-router-dom';
 import LandingPage from '../components/pages/LandingPage';
 import CalculatePage from '../components/pages/DeliCostCal';
-import LoginPage from '../screens/LoginPage';
-import OTPPage from '../screens/OTPPage';
-import SignupPage from '../screens/SignUp';
 import styles from '../styles/pages.module.css';
 import styleHeader from '../styles/header.module.css';
 
@@ -34,9 +31,6 @@ import Header from '../containers/header';
 export const pageEndpoint: { [key: string]: string } = {
   main: '',
   CalculatePage: 'calculate',
-  LoginPage: 'login',
-  SignupPage: 'signup',
-  OTPPage: 'otp',
   noMatch: '*'
 };
 
@@ -94,57 +88,6 @@ const routes = [
     main: () => (
       <React.Fragment>
         <CalculatePage {...propsCalculatePage} />
-      </React.Fragment>
-    ),
-  },
-  {
-    path: `/${pageEndpoint.SignupPage}`,
-    exact: true,
-    header: () => (
-      <React.Fragment>
-        <Header />
-      </React.Fragment>
-    ),
-    navigator: () => (
-      <></>
-    ),
-    main: () => (
-      <React.Fragment>
-        <SignupPage />
-      </React.Fragment>
-    ),
-  },
-  {
-    path: `/${pageEndpoint.LoginPage}`,
-    exact: true,
-    header: () => (
-      <React.Fragment>
-        <Header />
-      </React.Fragment>
-    ),
-    navigator: () => (
-      <></>
-    ),
-    main: () => (
-      <React.Fragment>
-        <LoginPage />
-      </React.Fragment>
-    ),
-  },
-  {
-    path: `/${pageEndpoint.OTPPage}`,
-    exact: true,
-    header: () => (
-      <React.Fragment>
-        <Header />
-      </React.Fragment>
-    ),
-    navigator: () => (
-      <></>
-    ),
-    main: () => (
-      <React.Fragment>
-        <OTPPage />
       </React.Fragment>
     ),
   }
