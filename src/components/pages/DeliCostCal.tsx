@@ -31,14 +31,9 @@ import { NavOpenACT } from '../../stores/actions/NavigatorAction';
 // fetch data
 import towns from '../datas/towns';
 
-//atoms
-import ComboBox from '../atoms/ComboBox';
-
 // icons
 import SearchIcon from '@mui/icons-material/Search';
 import LocationCityIcon from '@mui/icons-material/LocationCity';
-
-import eventBus from '../events/EventBus';
 
 //checkbox
 import Checkbox from '@mui/material/Checkbox';
@@ -124,7 +119,7 @@ const CalculatePage = (props: any) => {
             for (let i = 0; i < nodes.length; i++) {
               nodesArray.push(nodes[i]);
               if (nodesArray.length < maxRoutes) {
-                //recursiveCalRoutesByMaxRoutes(nodes[i].to, end);
+                recursiveCalRoutesByMaxRoutes(nodes[i].to, end);
               } else {
                 if (nodes[i].to == end) {
                   count = count + 1;
@@ -153,7 +148,8 @@ const CalculatePage = (props: any) => {
 
   function recursiveCalRoutesByMaxRoutes(start: string, end: string) {
     let nodes = routes.filter(r => r.from == start);
-    if (nodes.length > 0) {
+    if (nodes.length == 0) return;
+    else if (nodes.length > 0){
       for (let i = 0; i < nodes.length; i++) {
         if (nodesArray.length < maxRoutes) {
           recursiveCalRoutesByMaxRoutes(nodes[i].to, end);
@@ -170,15 +166,17 @@ const CalculatePage = (props: any) => {
   function recursiveCalRoutesByCost(start: string, end: string) {
     let nodes = routes.filter(r => r.from == start);
     if (nodes.length == 0) return;
-    for (let i = 0; i < nodes.length; i++) {
-      let temp = costCal + nodes[i].cost;
-      if (temp < definedCost) {
-        recursiveCalRoutesByCost(nodes[i].to, end);
-      }
-      else {
-        if (nodes[i].from == end) {
-          count = count + 1;
-          setRouteCount(count);
+    else if (nodes.length > 0){
+      for (let i = 0; i < nodes.length; i++) {
+        let temp = costCal + nodes[i].cost;
+        if (temp < definedCost) {
+          recursiveCalRoutesByCost(nodes[i].to, end);
+        }
+        else {
+          if (nodes[i].from == end) {
+            count = count + 1;
+            setRouteCount(count);
+          }
         }
       }
     }
@@ -187,7 +185,8 @@ const CalculatePage = (props: any) => {
 
   function recursiveCalRoutes(start: string, end: string) {
     let nodes = routes.filter(r => r.from == start);
-    if (nodes.length > 0) {
+    if (nodes.length == 0) return;
+    else if (nodes.length > 0){
       for (let i = 0; i < nodes.length; i++) {
         if (nodes[i].to != end) {
           recursiveCalRoutes(nodes[i].to, end);
@@ -199,16 +198,6 @@ const CalculatePage = (props: any) => {
       }
     }
   }
-
-  eventBus.on("selectValue", (data: any) => {
-
-    if (data.id == 'fromCity') {
-      setValueFrom(data.value)
-    } else {
-      setValueTo(data.value)
-    }
-  }
-  );
 
   if (props.headerOpen.headerOpen) props.HeaderOpenACT(false);
   let fromCity = { array: towns, id: 'fromCity' };
@@ -447,15 +436,6 @@ const CalculatePage = (props: any) => {
             </Button>
           </div>
         </Box>
-        {/* <Grid container sx={{ mb: 3 }}>
-          <Grid item lg={6} md={6} sm={12} xs={12}>
-            
-
-          </Grid>
-          <Grid item lg={6} md={6} sm={12} xs={12}>
-           
-          </Grid>
-        </Grid> */}
         <br></br>
         <div>
           <Typography className={styles.send_typography}
