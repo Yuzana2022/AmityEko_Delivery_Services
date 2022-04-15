@@ -105,6 +105,7 @@ const CalculatePage = (props: any) => {
   //calculation
   var count = 0;
   var nodesArray = [];
+  var costCal = 0;
 
   const calRoutes = () => {
     let from = '';
@@ -140,8 +141,10 @@ const CalculatePage = (props: any) => {
         }
         else if (definedCost > 0) {
           for (let i = 0; i < nodes.length; i++) {
-            start = nodes[i].to;
-            recursiveCalRoutesByCost(start, end, nodes[i].cost);
+            costCal = cost + nodes[i].cost;
+            if (costCal < definedCost) {
+              recursiveCalRoutesByCost(nodes[i].to, end)
+            }
           }
         }
       }
@@ -164,19 +167,18 @@ const CalculatePage = (props: any) => {
     }
   }
 
-  function recursiveCalRoutesByCost(start: string, end: string, cost: number) {
+  function recursiveCalRoutesByCost(start: string, end: string) {
     let nodes = routes.filter(r => r.from == start);
-    if (nodes.length > 0) {
-      for (let i = 0; i < nodes.length; i++) {
-        let cost1 = cost + nodes[i].cost;
-        if (cost < definedCost) {
-          recursiveCalRoutesByCost(nodes[i].to, end, cost1)
-        }
-        else {
-          if (nodes[i].to == end) {
-            count = count + 1;
-            setRouteCount(count);
-          }
+    if (nodes.length == 0) return;
+    for (let i = 0; i < nodes.length; i++) {
+      let temp = costCal + nodes[i].cost;
+      if (temp < definedCost) {
+        recursiveCalRoutesByCost(nodes[i].to, end);
+      }
+      else {
+        if (nodes[i].from == end) {
+          count = count + 1;
+          setRouteCount(count);
         }
       }
     }
@@ -303,7 +305,7 @@ const CalculatePage = (props: any) => {
             </FormControl>
           </Box>
 
-          <Button sx={{ mr:1 }} variant="contained" className={styles.send_btn_contained}
+          <Button sx={{ mr: 1 }} variant="contained" className={styles.send_btn_contained}
             onClick={calCost}>
             Calculate Cost
           </Button>
