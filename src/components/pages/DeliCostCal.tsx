@@ -77,10 +77,6 @@ const CalculatePage = (props: any) => {
   const toCityChanged = (event: SelectChangeEvent) => {
     setValueTo(event.target.value as string);
   };
-  // const useTwiceChanged = (event: any) => {
-  //   console.log('useTwice',useTwice)
-  //   setUseTwice(!useTwice)
-  // }
   const definedCostChanged = (event: any) => {
     setDefinedCost(parseInt(event.target.value));
   }
