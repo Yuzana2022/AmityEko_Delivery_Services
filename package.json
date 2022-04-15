@@ -1,0 +1,83 @@
+{
+  "name": "amityeko_delivery_service",
+  "version": "0.1.0",
+  "private": true,
+  "homepage": "https://Yuzana2022.github.io",
+  "dependencies": {
+    "@emotion/react": "^11.7.1",
+    "@emotion/styled": "^11.6.0",
+    "@material-ui/core": "^4.12.3",
+    "@material-ui/icons": "^4.11.2",
+    "@material/toolbar": "^2.3.0",
+    "@mui/icons-material": "^5.4.1",
+    "@mui/lab": "^5.0.0-alpha.68",
+    "@mui/material": "^5.4.1",
+    "@mui/styled-engine-sc": "^5.4.1",
+    "@mui/styles": "^5.4.1",
+    "@mui/x-data-grid": "^5.5.1",
+    "@react-navigation/native": "^6.0.8",
+    "@react-navigation/native-stack": "^6.5.0",
+    "@testing-library/jest-dom": "^5.16.2",
+    "@testing-library/react": "^12.1.2",
+    "@testing-library/user-event": "^13.5.0",
+    "@types/jest": "^27.4.0",
+    "@types/node": "^16.11.22",
+    "@types/react-dom": "^17.0.11",
+    "@types/react-router-dom": "^5.3.3",
+    "apexcharts": "^3.33.2",
+    "axios": "^0.19.0",
+    "bootstrap": "^5.1.3",
+    "date-fns": "^2.28.0",
+    "firebase": "^9.6.7",
+    "material-ui-search-bar": "^1.0.0",
+    "react": "^17.0.2",
+    "react-device-detect": "^2.1.2",
+    "react-dom": "^17.0.2",
+    "react-modern-drawer": "^1.0.1",
+    "react-native-safe-area-context": "^3.4.0",
+    "react-native-screens": "^3.12.0",
+    "react-otp-input": "^2.4.0",
+    "react-redux": "^7.2.6",
+    "react-router-dom": "^5.0.1",
+    "react-scripts": "^5.0.0",
+    "react-swipeable-views": "^0.14.0",
+    "redux": "^4.1.2",
+    "redux-form": "^8.2.6",
+    "redux-thunk": "^2.4.1",
+    "styled-components": "^5.3.3",
+    "typescript": ">=3.8.0",
+    "use-screen-size": "^1.1.0",
+    "web-vitals": "^2.1.4"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "@types/react": "^17.0.39",
+    "redux-devtools": "^3.7.0",
+    "typescript": "^4.5.5"
+  }
+}
