@@ -32,7 +32,6 @@ import { NavOpenACT } from '../../stores/actions/NavigatorAction';
 import towns from '../datas/towns';
 
 // icons
-import SearchIcon from '@mui/icons-material/Search';
 import LocationCityIcon from '@mui/icons-material/LocationCity';
 
 //checkbox
@@ -45,8 +44,6 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 
 import { Town } from '../interfaces/town';
-import { Route } from '../interfaces/route';
-
 
 const label = { inputProps: { 'aria-label': 'Checkbox demo' } };
 
@@ -99,8 +96,8 @@ const CalculatePage = (props: any) => {
 
   //calculation
   var count = 0;
-  var nodesArray = [];
-  var costCal = 0;
+  var routesControl: any[] = []; //for no of routes by maximum routes
+  var routesControlCost: any[] = []; //for no of routes by maximum cost
 
   const calRoutes = () => {
     let from = '';
@@ -117,9 +114,10 @@ const CalculatePage = (props: any) => {
         if (definedCost == 0) {
           if (maxRoutes > 0) {
             for (let i = 0; i < nodes.length; i++) {
-              nodesArray.push(nodes[i]);
-              if (nodesArray.length < maxRoutes) {
-                recursiveCalRoutesByMaxRoutes(nodes[i].to, end);
+              routesControl.push({ id: 'level' + routesControl.length, value: [] });
+              routesControl[routesControl.length - 1].value.push(nodes[i])
+              if (routesControl[routesControl.length - 1].value.length < maxRoutes) {
+                recursiveCalRoutesByMaxRoutes(nodes[i].to, end, routesControl[routesControl.length - 1].value);
               } else {
                 if (nodes[i].to == end) {
                   count = count + 1;
@@ -136,9 +134,10 @@ const CalculatePage = (props: any) => {
         }
         else if (definedCost > 0) {
           for (let i = 0; i < nodes.length; i++) {
-            costCal = cost + nodes[i].cost;
-            if (costCal < definedCost) {
-              recursiveCalRoutesByCost(nodes[i].to, end)
+            routesControlCost.push({ id: 'cost' + routesControlCost.length, value: 0 });
+            routesControlCost[routesControlCost.length - 1].value = routesControlCost[routesControlCost.length - 1].value + nodes[i].cost;
+            if (routesControlCost[routesControlCost.length - 1].value < definedCost) {
+              recursiveCalRoutesByCost(nodes[i].to, end, routesControlCost[routesControlCost.length - 1].value);
             }
           }
         }
@@ -146,15 +145,18 @@ const CalculatePage = (props: any) => {
     }
   }
 
-  function recursiveCalRoutesByMaxRoutes(start: string, end: string) {
+  function recursiveCalRoutesByMaxRoutes(start: string, end: string, nodesArrayLoop: any[]) {
     let nodes = routes.filter(r => r.from == start);
     if (nodes.length == 0) return;
-    else if (nodes.length > 0){
+    else if (nodes.length > 0) {
       for (let i = 0; i < nodes.length; i++) {
-        if (nodesArray.length < maxRoutes) {
-          recursiveCalRoutesByMaxRoutes(nodes[i].to, end);
+        routesControlCost.push({ id: 'cost' + routesControlCost.length, value: 0 });
+        routesControl[routesControl.length - 1].value = nodesArrayLoop;
+        routesControl[routesControl.length - 1].value.push(nodes[i]);
+        if (routesControl[routesControl.length - 1].value.length < maxRoutes) {
+          recursiveCalRoutesByMaxRoutes(nodes[i].to, end, routesControl[routesControl.length - 1].value);
         } else {
-          if (nodes[i].to !== end) {
+          if (nodes[i].to == end) {
             count = count + 1;
             setRouteCount(count);
           }
@@ -163,14 +165,16 @@ const CalculatePage = (props: any) => {
     }
   }
 
-  function recursiveCalRoutesByCost(start: string, end: string) {
+  function recursiveCalRoutesByCost(start: string, end: string, costPrev: number) {
     let nodes = routes.filter(r => r.from == start);
     if (nodes.length == 0) return;
-    else if (nodes.length > 0){
+    else if (nodes.length > 0) {
       for (let i = 0; i < nodes.length; i++) {
-        let temp = costCal + nodes[i].cost;
-        if (temp < definedCost) {
-          recursiveCalRoutesByCost(nodes[i].to, end);
+        routesControlCost.push({ id: 'level' + routesControlCost.length, value: 0 });
+        routesControlCost[routesControlCost.length - 1].value = costPrev;
+        routesControlCost[routesControlCost.length - 1].value = routesControlCost[routesControlCost.length - 1].value + nodes[i].cost;
+        if (routesControlCost[routesControlCost.length - 1].value < definedCost) {
+          recursiveCalRoutesByMaxRoutes(nodes[i].to, end, routesControlCost[routesControlCost.length - 1].value);
         }
         else {
           if (nodes[i].from == end) {
@@ -186,7 +190,7 @@ const CalculatePage = (props: any) => {
   function recursiveCalRoutes(start: string, end: string) {
     let nodes = routes.filter(r => r.from == start);
     if (nodes.length == 0) return;
-    else if (nodes.length > 0){
+    else if (nodes.length > 0) {
       for (let i = 0; i < nodes.length; i++) {
         if (nodes[i].to != end) {
           recursiveCalRoutes(nodes[i].to, end);
@@ -246,6 +250,8 @@ const CalculatePage = (props: any) => {
     setValueFrom('');
     setValueTo('');
     setMaxRoutes(0);
+    setDefinedCost(0);
+    setRouteCount(0);
   }
 
   return (
